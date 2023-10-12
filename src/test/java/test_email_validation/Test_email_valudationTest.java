@@ -5,9 +5,15 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
 @WireMockTest()
@@ -17,13 +23,14 @@ class Test_email_valudationTest {
 
     @Test
     void test_sucess(RequestSpecification spec) {
-        spec.given()
+        ValidatableResponse res = spec.given()
                 .contentType(ContentType.JSON)
-                .get("/myobj/123")
+                .get("/myobj/abc")
                 .then()
                 .log().ifValidationFails(LogDetail.ALL)
                 .statusCode(200);
-
+        res.body("id", response -> equalTo("abc"));
+        res.body("hiddenField", response -> equalTo(null));
     }
 
     @Test
