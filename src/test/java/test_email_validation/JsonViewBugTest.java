@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
 @WireMockTest()
-class Test_email_valudationTest {
+class JsonViewBugTest {
     @RegisterExtension
     static WireMockExtension downloadWm = WireMockExtension.newInstance().build();
 

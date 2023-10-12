@@ -1,36 +1,23 @@
-## Micronaut 4.1.2 Documentation
+## Micronaut 4.1.2
 
-- [User Guide](https://docs.micronaut.io/4.1.2/guide/index.html)
-- [API Reference](https://docs.micronaut.io/4.1.2/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/4.1.2/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+## Bug
+This code is demonstrating a bug with using @JsonView and handling exceptions.
 
-- [Micronaut Maven Plugin documentation](https://micronaut-projects.github.io/micronaut-maven-plugin/latest/)
-## Feature lombok documentation
+To see this bug in action run the test "JsonViewBugTest".
 
-- [Micronaut Project Lombok documentation](https://docs.micronaut.io/latest/guide/index.html#lombok)
+To repeat the bug
+1. Create a JsonView class (Views.class)
+2. Create a rest GET endpoint.
+   1. Declaration should return an object.
+   2. Body of method should throw a custom exception.
+   3. Annotate the endpoint with @JsonView(Views.Public.class)
+3. Create an exception handler for the custom exception.
+   1. It should handle the response with setting a status code.
+   2. It also needs to set something in the body. (See MyObjExceptionHandler)
+4. Annotate a given rest endpoint with JsonView(Views.class)
 
-- [https://projectlombok.org/features/all](https://projectlombok.org/features/all)
+That should be enough to repeat the bug.
 
-
-## Feature micronaut-aot documentation
-
-- [Micronaut AOT documentation](https://micronaut-projects.github.io/micronaut-aot/latest/guide/)
-
-
-## Feature validation documentation
-
-- [Micronaut Validation documentation](https://micronaut-projects.github.io/micronaut-validation/latest/guide/)
-
-
-## Feature maven-enforcer-plugin documentation
-
-- [https://maven.apache.org/enforcer/maven-enforcer-plugin/](https://maven.apache.org/enforcer/maven-enforcer-plugin/)
-
-
-## Feature serialization-jackson documentation
-
-- [Micronaut Serialization Jackson Core documentation](https://micronaut-projects.github.io/micronaut-serialization/latest/guide/)
-
-
+It apepars that io.micronaut.jackson.databind.JacksonDatabindMapper was changed such that
+it now registeres the expected type. Unforunately the type that is being converted is not
+the expected type and is instead of type JsonError. So the ObjectMapper throws an exception.
